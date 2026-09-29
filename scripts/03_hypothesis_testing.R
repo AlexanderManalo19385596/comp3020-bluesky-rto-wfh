@@ -44,7 +44,13 @@ result <- chisq.test(X)
 result
 
 # --- Decision ---
-# Compare result$p.value to 0.05 (or your chosen alpha) and write the
-# conclusion 
+# Conclusion: p < 0.05, so we reject H0.
+# There is a statistically significant association between topic
+# (RTO/WFH) and sentiment (p < .001) meaning this pattern is very
+# unlikely to be due to random chance. RTO posts skewed negative
+# (about 47% negative vs 40% positive), while WFH posts were
+# overwhelmingly positive (about 79% positive vs only 7% negative).
+# This shows Return-to-Office is discussed far more negatively than
+# Work-From-Home on Bluesky
 # p < 0.05 -> reject H0, evidence of association between topic and sentiment
 # p >= 0.05 -> fail to reject H0, no evidence of association
