@@ -1,0 +1,106 @@
+---
+title: "Bluesky workplace discussions: network section"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+source("scripts/06_thread_analysis.R")
+```
+
+## 2.5 Network analysis
+
+We collected responses around three selected posts about working from home vs returning to the office to analyse how people interacted when discussing mental health, related costs, remote work and job competition.
+
+### Data and graph construction
+
+We requested the selected posts and up to two levels of replies, so we used replies to the selected post and replies to those replies. We did not request earlier posts higher up in the thread. We combined the saved responses while removing repeated posts using URIs, leaving 66 posts.
+
+There were 62 different accounts in the network, and we added a connection from the replying account to the account it replied to when both posts were in the collected data.
+
+Connections were excluded where the account was replying to itself. If connections between the same accounts were repeated in the same direction, we counted them only once, leaving 60 directed connections.
+
+### Content review and scope
+
+After reviewing the posts, we labelled 33 as workplace discussion, 26 as context, 6 as unclear and only 1 as off topic.
+
+We used these labels to describe content rather than removing posts from the network.
+
+collected accounts and reply connection remained included also.
+
+the results show interactions for 3 selected posts and are not meant to represent preferences across Bluesky as a whole.
+
+### Network structure
+
+```{r network-structure, echo=FALSE}
+structure_table <- data.frame(
+  Measure = c(
+    "Retrieved posts", "Accounts", "Directed edges",
+    "Directed density", "Isolated accounts",
+    "Weak components", "Largest component: accounts"
+  ),
+  Value = as.character(c(
+    thread_summary$posts,
+    thread_summary$accounts,
+    thread_summary$connections,
+    thread_summary$density,
+    thread_summary$isolated_accounts,
+    thread_summary$connected_groups,
+    thread_summary$largest_group
+  ))
+)
+
+knitr::kable(
+  structure_table,
+  caption = "Structure of the observed reply network"
+)
+```
+
+The network density was 0.0159. This means about 1.59% of the possible directed connections between different accounts were present.
+
+The network had three connected groups, called weak components, containing 32, 19 and 11 accounts. We identified these groups by checking which accounts were connected while ignoring the direction of the arrows. We did not observe any connections between the three groups in the collected data.
+
+```{r full-network, echo=FALSE, out.width="90%", fig.align="center", fig.cap="Observed reply network across three selected conversations (62 accounts, 60 edges). Arrows point from replying authors to parent authors; colours identify weak components."}
+knitr::include_graphics("outputs/network/full_reply_network.png")
+```
+
+### Largest connected conversation
+
+We chose the largest weak component to get a clearer view of the conversation with the most accounts. Its selected post discussed workplace isolation and mental health. This group contained 32 accounts and 31 directed connections. We calculated the network statistics and centrality scores using the full network.
+
+```{r largest-network, echo=FALSE, out.width="90%", fig.align="center", fig.cap="Largest weak component: isolation and wellbeing (32 accounts, 31 edges). Node size increases with in-degree."}
+knitr::include_graphics("outputs/network/largest_conversation.png")
+```
+
+\clearpage
+
+### Account centrality
+
+We used two centrality measures: in-degree and raw, or unnormalised, directed betweenness. The table shows the three accounts with the highest in-degree and all accounts with a betweenness score above zero.
+
+```{r account-centrality, echo=FALSE}
+centrality_table <- unique(rbind(
+  head(reply_ranking, 3),
+  between_ranking[between_ranking$betweenness > 0, ]
+))
+
+knitr::kable(
+  centrality_table,
+  row.names = FALSE,
+  col.names = c("Account", "In-degree", "Raw betweenness"),
+  caption = "Accounts with the three highest in-degrees or positive directed betweenness"
+)
+```
+
+In-degree counts how many different accounts have a reply connection pointing to an author. The accounts cnn.com, rincewind.run and shockemc.bsky.social received connections from 29, 18 and eight different accounts respectively. These accounts wrote the three selected posts, so the way we collected the conversations favours them as reply targets. Replies indicate engagement within these conversations, but they do not establish agreement or endorsement.
+
+Directed betweenness measures an account's role on the shortest paths between other accounts, following the direction of the arrows. The accounts at the start and end of a path are not counted as intermediaries. The three accounts with the highest in-degree all had a betweenness score of zero. Receiving many replies therefore did not mean they acted as links between other accounts.
+
+The accounts goodboy.bsky.social, nasboat.org, nk-dizzle.bsky.social and trekkiebill.bsky.social each had a raw betweenness score of one. These small scores show a limited role as intermediaries within the recorded reply paths. They do not show that these accounts connect the three separate groups or have influence across Bluesky.
+
+### Limitations
+
+We only collected replies around 3 selected posts, so the network does not show all the reply connections these accounts may have. Our requests went as far as two reply levels and did not include earlier posts higher up in the thread. Both posts had to be collected before we could add a reply connection. Connections may therefore be missing because they were outside our requests or because the API did not return the posts. More complete data could change the groups and centrality scores.
+
+Most replies were around the selected posts. With only two reply levels, there are few longer paths for betweenness to measure. This means the scores partly reflect how we collected the data. The 3 groups could be linked by replies we did not collect. They do not tell us which work arrangement people support or how common those opinions are across Bluesky.
+
+The text and context did not give us enough information to label 6 posts more clearly. We did not check media, so that information is missing from our content review. We still kept all 66 posts, including the unclear and off-topic ones. An account's colour or position on the graph does not tell us its workplace preference. These network review counts come from a separate sample from the group's keyword-based content analysis.
