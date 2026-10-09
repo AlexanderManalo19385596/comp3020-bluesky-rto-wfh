@@ -26,7 +26,7 @@ Our research questions were:
 
 ## 2.1 Data collection and preparation
 
-[Add collection details, cleaning rules, relevance/language handling and final sample counts.]
+We collected Bluesky posts using the search phrases “return to office” and “remote work”. For each search, we requested 500 posts, with the results ordered by latest. We saved the raw results separately and combined the datasets for analysis. We labelled posts as RTO or WFH based on the search they came from. Basic cleaning removed posts with missing text, posts with 10 characters or fewer, and repeated posts using their URIs. The two labels describe the search groups rather than whether people preferred working from home or returning to the office.
 
 ## 2.2 Text analysis
 
