@@ -71,11 +71,11 @@ Connections were excluded where the account was replying to itself. If connectio
 
 ### Content review and scope
 
-After reviewing the posts, we labelled 33 as workplace discussion, 26 as context, 6 as unclear and only 1 as off topic.
+Reviewing the posts led us to label 33 posts as workplace discussion, 26 as context, 6 as unclear and only one as off topic.
 
-We used these labels to describe content rather than removing posts from the network.
+We used these labels to describe content instead of removing posts from the network.
 
-collected accounts and reply connection remained included also.
+Collected accounts and reply connections were also left included.
 
 the results show interactions for 3 selected posts and are not meant to represent preferences across Bluesky as a whole.
 
@@ -161,7 +161,7 @@ The text and context did not give us enough information to label 6 posts more cl
 
 # 3 Discussion
 
-[Connect the findings to our research questions and explain the overall limitations.]
+The text results showed policy and mandate words in the RTO search group, while the remote work group showed job and jobs. The clustering did not reveal clear workplace themes, as most posts were in one mixed cluster and the smaller groups held unrelated uses of search terms and repeated messages. These results suggest that some patterns came from how posts were collected and repeated. They do not establish whether people preferred remote work or RTO.
 
 # 4 Conclusion
 
