@@ -22,6 +22,16 @@ reply_ranking <- read.csv("outputs/network/account_centrality.csv")
 between_ranking <- reply_ranking[order(-reply_ranking$betweenness, reply_ranking$account), ]
 ```
 
+**Group 25**
+
+| Group member | Student ID | Contribution |
+| -------------------------------- | ---------- | ----------------- |
+| Joshua William Kilpatrick | 20146450 | Pending agreement |
+| Alexander Manalo | 19385596 | Pending agreement |
+| Manraj Singh | 22117527 | Pending agreement |
+
+\newpage
+
 # 1 Introduction
 
 We chose to examine working from home vs returning to the office because it becomes interesting when you consider people's concerns about well being, costs and job competition. Our aim was to use Bluesky posts to compare sentiment between the two search groups, examine common words and themes, and analyse reply patterns for selected posts.
@@ -35,9 +45,12 @@ Our research questions were:
 
 # 2 Analysis
 
+We used atrrr to collect Bluesky data through the search and thread APIs (Bluesky, n.d.-a, n.d.-b; Gruber et al., 2026). Text processing used tidytext (Silge & Robinson, 2016). Clustering used SnowballC for stemming (Bouchet-Valat, 2023), TF-IDF weighting (Silge & Robinson, 2017), and R's k-means function (R Core Team, n.d.-a). We used principal components analysis for the cluster display (R Core Team, n.d.-b), ggplot2 for the text and clustering charts (Wickham, 2016), and igraph for network analysis (Csárdi & Nepusz, 2006).
+
 ## 2.1 Data collection and preparation
 
 We collected Bluesky posts using the search phrases “return to office” and “remote work”. For each search, we requested 500 posts, with the results ordered by latest. We saved the raw results separately and combined the datasets for analysis. We labelled posts as RTO or WFH based on the search they came from. Basic cleaning removed posts with missing text, posts with 10 characters or fewer, and repeated posts using their URIs. The two labels describe the search groups rather than whether people preferred working from home or returning to the office.
+
 
 ```{r preparation-section, child="report_sections/text_preparation.Rmd"}
 ```
@@ -163,13 +176,34 @@ The text and context did not give us enough information to label 6 posts more cl
 
 The text results showed policy and mandate words in the RTO search group, while the remote work group showed job and jobs. The clustering did not reveal clear workplace themes, as most posts were in one mixed cluster and the smaller groups held unrelated uses of search terms and repeated messages. These results suggest that some patterns came from how posts were collected and repeated. They do not establish whether people preferred remote work or RTO.
 
+Our collection revealed three distinct conversational groups swirling around the selected posts, completely isolated from one another in the replies we collected. While the presence of replies signaled active engagement, it offered no window into sentiment or agreement. Because this dataset is strictly anchored to three specific posts, these snapshots reflect isolated moments of conversation rather than a sweeping portrait of views across Bluesky.
+
 # 4 Conclusion
 
 [Answer the research questions once all results are confirmed.]
 
 # 5 References
 
-[Add the sources, packages and methods used.]
+Bluesky. (n.d.-a). *app.bsky.feed.getPostThread* [API schema]. [Official schema](https://github.com/bluesky-social/atproto/blob/main/lexicons/app/bsky/feed/getPostThread.json).
+
+Bluesky. (n.d.-b). *app.bsky.feed.searchPosts* [API schema]. [Official schema](https://github.com/bluesky-social/atproto/blob/main/lexicons/app/bsky/feed/searchPosts.json).
+
+Bouchet-Valat, M. (2023). *SnowballC: Snowball stemmers based on the C libstemmer UTF-8 library* (Version 0.7.1) [R package]. [CRAN](https://cran.r-project.org/package=SnowballC).
+
+Csárdi, G., & Nepusz, T. (2006). The igraph software package for complex network research. *InterJournal, Complex Systems*, 1695. [igraph citation information](https://r.igraph.org/authors.html).
+
+Gruber, J. B., Guinaudeau, B., & Votta, F. (2026). *atrrr: Wrapper for the AT Protocol behind Bluesky* (Version 0.2.0) [R package]. [CRAN](https://cran.r-project.org/package=atrrr).
+
+R Core Team. (n.d.-a). *K-means clustering* [R documentation]. [Function documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/kmeans.html).
+
+R Core Team. (n.d.-b). *Principal components analysis* [R documentation]. [Function documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/prcomp.html).
+
+Silge, J., & Robinson, D. (2016). tidytext: Text mining and analysis using tidy data principles in R. *Journal of Open Source Software, 1*(3), 37. [doi:10.21105/joss.00037](https://doi.org/10.21105/joss.00037).
+
+Silge, J., & Robinson, D. (2017). *Text mining with R: A tidy approach*. O'Reilly Media. [Online book](https://www.tidytextmining.com/).
+
+Wickham, H. (2016). *ggplot2: Elegant graphics for data analysis*. Springer-Verlag New York. [ggplot2 citation information](https://ggplot2.tidyverse.org/authors.html).
+
 
 **Project repository:** https://github.com/AlexanderManalo19385596/comp3020-bluesky-rto-wfh
 
