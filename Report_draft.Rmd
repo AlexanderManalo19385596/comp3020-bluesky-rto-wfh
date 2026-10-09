@@ -26,9 +26,9 @@ between_ranking <- reply_ranking[order(-reply_ranking$betweenness, reply_ranking
 
 | Group member | Student ID | Contribution |
 | -------------------------------- | ---------- | ----------------- |
-| Joshua William Kilpatrick | 20146450 | Pending agreement |
-| Alexander Manalo | 19385596 | Pending agreement |
-| Manraj Singh | 22117527 | Pending agreement |
+| Joshua William Kilpatrick | 20146450 | 34% |
+| Alexander Manalo | 19385596 | 33% |
+| Manraj Singh | 22117527 | 33% |
 
 \newpage
 
