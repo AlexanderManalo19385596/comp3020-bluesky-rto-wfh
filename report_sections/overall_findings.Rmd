@@ -1,0 +1,24 @@
+### What each analysis found
+
+**Sentiment (Section 2.2).** After removing the search words from the sentiment dictionary, RTO posts were more often negative (`r sent_pct(sent_pct_table["RTO", "Negative"])` negative, `r sent_pct(sent_pct_table["RTO", "Positive"])` positive) and WFH posts more often positive (`r sent_pct(sent_pct_table["WFH", "Negative"])` negative, `r sent_pct(sent_pct_table["WFH", "Positive"])` positive). The association was statistically significant (X-squared = `r round(unname(sent_test$statistic), 2)`, `r sent_p(sent_test$p.value)`) with a small-to-moderate effect (Cramer's V = `r round(sent_V, 2)`). Without the adjustment the gap looked about twice as large, so the dictionary's treatment of the word "work" mattered.
+
+**Words (Section 2.3).** RTO posts more often used policy and employment vocabulary, with "policy" in 7.3% of posts, "mandates" in 6.7% and "employees" in 5.4%. WFH posts were more job-related, with "job" in 9.3% of posts and "jobs" in 8.1%.
+
+**Clusters (Section 2.4).** We found one large mixed cluster holding 642 of 700 posts (91.7%). The four small clusters, of 21, 16, 11 and 10 posts, were repeated message families, namely political news, appeals for help, job referrals and one news story. There was weak evidence for distinct workplace themes.
+
+**Network (Section 2.5).** The reply network from three selected conversations had 62 accounts and 60 directed connections, with a density of 0.016 and three separate components. Replies were concentrated on the accounts that wrote the selected posts, which had the highest in-degree (29, 18 and 8) and no betweenness. A few accounts had a betweenness of one, which shows only a small bridging role.
+
+### What the findings tell us about the topic
+
+Together, the analyses suggest that Bluesky posts returned by a return-to-office search are more negative and more concerned with policy and politics than posts returned by a remote-work search, which are more positive and more concerned with jobs. The sentiment test shows that the difference exists. The text and clustering results show part of the reason: the two searches retrieve different kinds of content, including repeated news stories, appeals and job adverts, and several of the words that drive the sentiment scores come from these. The network results show that where people did reply, the attention was concentrated on a few posts and the conversations stayed separate. These results describe the posts our searches returned. They do not show what people on Bluesky, or workers in general, prefer.
+
+### Limitations
+
+- **Data collection and sampling.** We used exact-phrase searches, so we missed posts about the same topic that used other words. We collected only the latest 500 posts per phrase, and the groups cover different periods (RTO from 25 August, WFH from 15 September). Bluesky users are not representative of workers, and the posts are mostly English and United States focused. The English-label filter excluded 345 posts without language tags, some of which may be English.
+- **API restrictions.** The search returns only matching posts, and the thread requests covered two reply levels without earlier posts higher in the conversation, so some connections in the network are missing.
+- **Analytical choices.** Dictionary-based sentiment cannot detect sarcasm and measures the words used and not the author's opinion. Our results depended on removing the search words from the dictionary. The cluster count of five was an exploratory choice with no clear elbow. The network came from three hand-picked conversations, so it is small, sparse and not representative of Bluesky as a whole.
+- **Repeated content.** Repeated messages from different accounts count as separate posts, which can inflate both word counts and cluster sizes.
+
+### Repository
+
+The data and code are available at https://github.com/AlexanderManalo19385596/comp3020-bluesky-rto-wfh

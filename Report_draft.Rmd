@@ -38,31 +38,32 @@ We chose to examine working from home vs returning to the office because it beco
 
 Our research questions were:
 
-1. What common words and themes appear in the posts from the two search groups?
-2. How do sentiment categories compare between the return-to-office and remote-work search groups?
-3. Do English-labelled search results contain distinct vocabulary clusters, and how do these relate to the search groups?
+1. How do sentiment categories compare between the return-to-office and remote-work search groups?
+2. What vocabulary characterises the English-labelled RTO and WFH search results?
+3. Do the English-labelled search results form distinct vocabulary clusters, and how are the two search groups distributed across them?
 4. How do accounts interact through replies around our three selected posts?
 
 # 2 Analysis
 
 We used atrrr to collect Bluesky data through the search and thread APIs (Bluesky, n.d.-a, n.d.-b; Gruber et al., 2026). Text processing used tidytext (Silge & Robinson, 2016). Clustering used SnowballC for stemming (Bouchet-Valat, 2023), TF-IDF weighting (Silge & Robinson, 2017), and R's k-means function (R Core Team, n.d.-a). We used principal components analysis for the cluster display (R Core Team, n.d.-b), ggplot2 for the text and clustering charts (Wickham, 2016), and igraph for network analysis (Csárdi & Nepusz, 2006).
 
-## 2.1 Data collection and preparation
+## 2.1 Data Collection
 
-We collected Bluesky posts using the search phrases “return to office” and “remote work”. For each search, we requested 500 posts, with the results ordered by latest. We saved the raw results separately and combined the datasets for analysis. We labelled posts as RTO or WFH based on the search they came from. Basic cleaning removed posts with missing text, posts with 10 characters or fewer, and repeated posts using their URIs. The two labels describe the search groups rather than whether people preferred working from home or returning to the office.
-
+```{r data-collection-section, child="report_sections/data_collection.Rmd"}
+```
 
 ```{r preparation-section, child="report_sections/text_preparation.Rmd"}
 ```
 
-## 2.2 Text analysis
+## 2.2 Hypothesis Testing
+
+```{r hypothesis-section, child="report_sections/hypothesis_results.Rmd"}
+```
+
+## 2.3 Text/Content Analysis and Visualisation
 
 ```{r text-section, child="report_sections/text_results.Rmd"}
 ```
-
-## 2.3 Hypothesis testing
-
-[Add the hypotheses, test method, assumptions, final results and interpretation.]
 
 ## 2.4 Clustering
 
@@ -70,7 +71,9 @@ We collected Bluesky posts using the search phrases “return to office” and �
 ```
 
 
-## 2.5 Network analysis
+## 2.5 Network Analysis
+
+**Research question:** How do accounts interact through replies around our three selected posts?
 
 We collected responses around three selected posts about working from home vs returning to the office to analyse how people interacted when discussing mental health, related costs, remote work and job competition.
 
@@ -78,7 +81,7 @@ We collected responses around three selected posts about working from home vs re
 
 We requested the selected posts and up to two levels of replies, so we used replies to the selected post and replies to those replies. We did not request earlier posts higher up in the thread. We combined the saved responses while removing repeated posts using URIs, leaving 66 posts.
 
-There were 62 different accounts in the network, and we added a connection from the replying account to the account it replied to when both posts were in the collected data.
+There were 62 different accounts in the network, and we added a connection from the replying account to the account it replied to when both posts were in the collected data. We treated the network as directed because a reply goes from one account to another, and the direction shows who replied to whom.
 
 Connections were excluded where the account was replying to itself. If connections between the same accounts were repeated in the same direction, we counted them only once, leaving 60 directed connections.
 
@@ -88,9 +91,7 @@ Reviewing the posts led us to label 33 posts as workplace discussion, 26 as cont
 
 We used these labels to describe content instead of removing posts from the network.
 
-Collected accounts and reply connections were also left included.
-
-the results show interactions for 3 selected posts and are not meant to represent preferences across Bluesky as a whole.
+All collected accounts and reply connections stayed in the network. The results show interactions around 3 selected posts and are not meant to represent preferences across Bluesky as a whole.
 
 ### Network structure
 
@@ -174,13 +175,22 @@ The text and context did not give us enough information to label 6 posts more cl
 
 # 3 Discussion
 
+Overall, posts from the return-to-office search were more negative than posts from the remote-work search. 52.0% of the RTO posts were negative and 36.6% were positive, while for the WFH posts 26.8% were negative and 55.4% were positive. The chi-squared test showed this difference was unlikely to be due to chance. However, our text analysis and clustering suggest this doesn't mean people were just angrier about RTO. The two searches pulled in different kinds of posts, and a lot of the words that decided the sentiment scores came from repeated news stories and appeals, not from people giving their opinion on a work arrangement.
+
 The text results showed policy and mandate words in the RTO search group, while the remote work group showed job and jobs. The clustering did not reveal clear workplace themes, as most posts were in one mixed cluster and the smaller groups held unrelated uses of search terms and repeated messages. These results suggest that some patterns came from how posts were collected and repeated. They do not establish whether people preferred remote work or RTO.
 
 Our collection revealed three distinct conversational groups swirling around the selected posts, completely isolated from one another in the replies we collected. While the presence of replies signaled active engagement, it offered no window into sentiment or agreement. Because this dataset is strictly anchored to three specific posts, these snapshots reflect isolated moments of conversation rather than a sweeping portrait of views across Bluesky.
 
 # 4 Conclusion
 
-[Answer the research questions once all results are confirmed.]
+In this project we looked at Bluesky posts about return-to-office and remote work. Our answers to the four research questions are below.
+
+1. **Sentiment.** RTO posts were more often negative than WFH posts (52.0% compared with 26.8%). The chi-squared test found a significant association between search group and sentiment (X-squared = 36.39, df = 2, p < .001), with a small to moderate effect (Cramer's V = 0.26). The difference was about twice as big before we removed the search words from the dictionary, so this choice mattered.
+2. **Vocabulary.** The RTO posts used more words like "policy", "mandates" and "employees", while the WFH posts used "job" and "jobs" more.
+3. **Clusters.** We didn't find strong evidence of separate themes. Most posts (642 of 700, or 91.7%) ended up in one mixed cluster. The four small clusters were mostly repeated messages, and each came from just one search group.
+4. **Network.** The network had 62 accounts and 60 connections, and a density of 0.016, so it was very sparse. Most replies went to the three accounts that wrote the selected posts, and the three conversations stayed separate from each other.
+
+These results only describe the posts our searches returned. They don't tell us what people on Bluesky, or workers in general, actually prefer.
 
 # 5 References
 
@@ -193,6 +203,8 @@ Bouchet-Valat, M. (2023). *SnowballC: Snowball stemmers based on the C libstemme
 Csárdi, G., & Nepusz, T. (2006). The igraph software package for complex network research. *InterJournal, Complex Systems*, 1695. [igraph citation information](https://r.igraph.org/authors.html).
 
 Gruber, J. B., Guinaudeau, B., & Votta, F. (2026). *atrrr: Wrapper for the AT Protocol behind Bluesky* (Version 0.2.0) [R package]. [CRAN](https://cran.r-project.org/package=atrrr).
+
+Hu, M., & Liu, B. (2004). Mining and summarizing customer reviews. *Proceedings of the 10th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 168-177.
 
 R Core Team. (n.d.-a). *K-means clustering* [R documentation]. [Function documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/kmeans.html).
 

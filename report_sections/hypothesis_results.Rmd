@@ -1,0 +1,95 @@
+```{r sentiment-setup, include=FALSE}
+# Child section for "2.2 Hypothesis testing" in Report_draft.Rmd.
+# All numbers come from scripts/08_sentiment_analysis.R so the text and tables agree.
+source("scripts/08_sentiment_analysis.R")
+
+sent_n_english <- nrow(sent_english)
+sent_n_scored  <- sum(sent_X)
+sent_rto_n     <- sum(sent_X["RTO", ])
+sent_wfh_n     <- sum(sent_X["WFH", ])
+sent_reject     <- sent_test$p.value < 0.05
+sent_reject_raw <- sent_test_raw$p.value < 0.05
+sent_reject_all <- sent_test_all$p.value < 0.05
+sent_reject_nj  <- sent_test_nojobs$p.value < 0.05
+
+sent_range_txt <- function(g) {
+  r <- sent_date_range[sent_date_range$group == g, ]
+  paste(format(r$first_post, "%d %B"), "to", format(r$last_post, "%d %B %Y"))
+}
+```
+
+**Research question:** How do sentiment categories compare between the return-to-office and remote-work search groups?
+
+To answer this with a formal test, we ask whether sentiment (negative, neutral or positive) is associated with the search group a post came from. As in the other sections, RTO and WFH describe the search, not the author's preference, and we use the same English-labelled posts.
+
+- **H0:** Search group and sentiment are independent. Knowing the group tells us nothing about the sentiment.
+- **H1:** Search group and sentiment are not independent. There is an association.
+
+### Method
+
+We used the same `r sent_n_english` English-labelled posts as the text analysis and clustering, so the sections describe the same data. We scored sentiment with the Bing lexicon of Hu and Liu (2004), supplied by `tidytext`, which labels words as positive or negative. We split each post into words and counted its positive and negative lexicon words. A post was classed as *Positive* if it had more positive than negative words, *Negative* if it had more negative than positive words, and *Neutral* if the counts were equal.
+
+**Words removed before scoring.** Our search phrases are part of the data. The Bing lexicon counts "work" as positive, and every WFH post contains "remote work" by construction, so scoring it would make WFH posts look positive before any opinion is expressed. We therefore removed the eight query words used in the text analysis (return, office, remote, work, home, rto, wfh and remotework) from the dictionary before scoring. We also removed "trump", which Bing counts as a positive verb but which here is almost always a name. The table shows how often the dictionary would have scored these words.
+
+```{r sentiment-dropped, echo=FALSE}
+knitr::kable(sent_drop_counts, col.names = c("Search group", "Word", "Bing label", "Occurrences"),
+             caption = "Removed words that the Bing lexicon would otherwise have scored")
+```
+
+Posts containing no remaining lexicon words cannot be scored, so they are not in the test: `r sent_n_scored` of the `r sent_n_english` posts were scored (`r sent_pct(100 * sent_n_scored / sent_n_english)`).
+
+Both variables are categorical (search group and sentiment class), so we used a **chi-squared test of independence** at a significance level of 0.05. The test compares the observed counts with the counts expected if group and sentiment were independent. The expected count in each cell is (row total x column total) / grand total. The test statistic is the sum of (observed - expected)^2 / expected over all cells, with (rows - 1) x (columns - 1) = 2 degrees of freedom. The test needs expected counts of about 5 or more; the smallest here was `r round(min(sent_test$expected), 1)`, so the assumption holds. We also ran a simulated p-value, as in the lecture slides.
+
+### Results
+
+```{r sentiment-counts, echo=FALSE}
+sent_counts_out <- cbind(as.data.frame.matrix(sent_X), Total = rowSums(sent_X))
+knitr::kable(sent_counts_out, caption = "Observed counts of scored English-labelled posts by search group and sentiment")
+```
+
+```{r sentiment-pct, echo=FALSE}
+knitr::kable(as.data.frame.matrix(sent_pct_table), caption = "Row percentages: sentiment within each search group")
+```
+
+```{r sentiment-figure, echo=FALSE, out.width="70%", fig.align="center", fig.cap="Sentiment of scored posts within each search group."}
+knitr::include_graphics("outputs/sentiment/sentiment_by_group.png")
+```
+
+The chi-squared test gave X-squared = `r round(unname(sent_test$statistic), 2)`, df = `r unname(sent_test$parameter)`, `r sent_p(sent_test$p.value)`. The simulated p-value was `r sent_p(sent_sim$p.value)`. Cramer's V, the effect size, was `r round(sent_V, 2)`.
+
+Among the `r sent_rto_n` scored RTO posts, `r sent_pct(sent_pct_table["RTO", "Negative"])` were negative and `r sent_pct(sent_pct_table["RTO", "Positive"])` positive. Among the `r sent_wfh_n` scored WFH posts, `r sent_pct(sent_pct_table["WFH", "Negative"])` were negative and `r sent_pct(sent_pct_table["WFH", "Positive"])` positive.
+
+```{r sentiment-residuals, echo=FALSE}
+knitr::kable(round(sent_test$stdres, 2), caption = "Standardised residuals (values beyond +/-2 show cells that differ clearly from independence)")
+```
+
+### Interpretation
+
+Because `r sent_p(sent_test$p.value)` is `r ifelse(sent_reject, "below", "above")` 0.05, we **`r ifelse(sent_reject, "reject", "fail to reject")` H0**. `r ifelse(sent_reject, "There is statistically significant evidence that search group and sentiment are associated: the sentiment mix of the RTO posts differs from that of the WFH posts by more than chance would explain. The standardised residuals show where the difference lies.", "There is no statistically significant evidence of an association between search group and sentiment.")` Cramer's V of `r round(sent_V, 2)` indicates a `r ifelse(sent_V >= 0.3, "moderate to strong", ifelse(sent_V >= 0.1, "small to moderate", "weak"))` association.
+
+This is an **association, not a cause**. The test does not show that remote work makes people happier or that return-to-office policies make them angry. The two labels describe the search each post came from, not the author's stated preference.
+
+```{r sentiment-top-words, echo=FALSE}
+knitr::kable(sent_top_words, col.names = c("Search group", "Sentiment", "Most frequent lexicon words (count)"),
+             caption = "Words that drove the sentiment scores")
+```
+
+The table shows what the scores rest on, and it shows why sentiment here is not the same as opinion. Several of the negative words, such as "bribery" and "corruption" in the RTO posts and "disabled" and "urgent" in the WFH posts, come from repeated news stories and appeals found in the clustering analysis, not from people judging a work arrangement. Words such as "like" and "well" can also be positive in the dictionary without expressing approval.
+
+### Robustness checks
+
+**Without removing the query words.** Scoring the same posts without removing the query words or "trump" gave X-squared = `r round(unname(sent_test_raw$statistic), 2)`, df = `r unname(sent_test_raw$parameter)`, `r sent_p(sent_test_raw$p.value)`. RTO posts were then `r sent_pct(sent_pct_raw["RTO", "Negative"])` negative and `r sent_pct(sent_pct_raw["RTO", "Positive"])` positive, and WFH posts `r sent_pct(sent_pct_raw["WFH", "Negative"])` negative and `r sent_pct(sent_pct_raw["WFH", "Positive"])` positive. Comparing this with the main result shows how much the dictionary's treatment of the search words alone changes the picture.
+
+**All cleaned posts.** The first analysis used all 1,137 cleaned posts, not only the English-labelled ones, and did not remove any words. That test gave X-squared = `r round(unname(sent_test_all$statistic), 2)`, df = `r unname(sent_test_all$parameter)`, `r sent_p(sent_test_all$p.value)`. `r ifelse(sent_reject_all == sent_reject, "The conclusion is the same as for the main analysis.", "The conclusion differs from the main analysis, so the result depends on which posts are included.")`
+
+**Job adverts.** Many WFH posts looked like job adverts, which use positive words and say nothing about how people feel about remote work. A keyword rule (for example "hiring", "apply now", "careers", "remotejobs") flagged `r sent_job_share$job_ads[sent_job_share$group == "WFH"]` WFH posts (`r sent_pct(sent_job_share$percent[sent_job_share$group == "WFH"])`) and `r sent_job_share$job_ads[sent_job_share$group == "RTO"]` RTO posts (`r sent_pct(sent_job_share$percent[sent_job_share$group == "RTO"])`). After removing them, X-squared = `r round(unname(sent_test_nojobs$statistic), 2)`, df = `r unname(sent_test_nojobs$parameter)`, `r sent_p(sent_test_nojobs$p.value)`. WFH posts were then `r sent_pct(sent_pct_nojobs["WFH", "Positive"])` positive and `r sent_pct(sent_pct_nojobs["WFH", "Negative"])` negative, and RTO posts `r sent_pct(sent_pct_nojobs["RTO", "Positive"])` positive and `r sent_pct(sent_pct_nojobs["RTO", "Negative"])` negative. `r ifelse(sent_reject_nj, "The association remained statistically significant, so job adverts alone do not explain the main result.", "The association was no longer statistically significant, so the main result depends on job adverts and should be read with care.")`
+
+### Limitations
+
+- **Dictionary sentiment is crude.** The Bing lexicon scores single words. It misses sarcasm and negation ("not good") and cannot tell opinion from news. Removing the query words fixes one known bias, but other words can still be scored for reasons unrelated to how the author feels.
+- **Unscored posts are left out.** `r sum(sent_coverage$unscored)` English-labelled posts had no remaining lexicon words and were excluded, and they were more common in the RTO group (`r sent_coverage$unscored[sent_coverage$group == "RTO"]` posts) than in the WFH group (`r sent_coverage$unscored[sent_coverage$group == "WFH"]`). This could bias the result if those posts differ in tone.
+- **Post type differs between groups.** The text analysis and clustering found that RTO posts often discuss policy and political news, while WFH posts include job adverts, appeals and repeated messages. Part of the sentiment difference may reflect the kind of post, not how the author feels. Repeated messages from different accounts are counted as separate posts.
+- **Different time coverage.** The English-labelled RTO posts span `r sent_range_txt("RTO")`, but the WFH posts only `r sent_range_txt("WFH")`. News events in the longer RTO window may affect its sentiment.
+- **Language tags are only a filter.** The English subset relies on Bluesky language tags, and many posts have none.
+- **Independence.** The test assumes each post is independent, but the same accounts can post more than once.
+- **Significance is not importance.** With about `r sent_n_scored` posts a modest difference can be significant, so we report the effect size and percentages as well as the p-value.
