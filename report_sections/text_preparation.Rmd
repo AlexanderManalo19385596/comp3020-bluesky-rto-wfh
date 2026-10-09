@@ -1,0 +1,14 @@
+The saved raw files contain 592 RTO and 586 WFH records. The cleaning script combines RTO first, so a URI appearing in both searches retains the RTO label. The resulting saved dataset contains 1,137 posts (577 RTO, 560 WFH).
+
+Saved RTO post timestamps span 25 August to 29 September 2026; WFH timestamps span 15 to 29 September 2026 (UTC, ignoring missing timestamps). These are observed post-date ranges, not guaranteed collection windows. The different time coverage and latest-result selection limit direct population comparisons. This analysis reads the frozen files and does not collect fresh data.
+
+For the text and clustering sections, we retain only posts with at least one language tag and with **every tag equal to `en` or an English regional variant** (case-insensitive). This leaves 751 English-labelled posts. We exclude 345 records without language tags and 41 with non-English or mixed tags. This is a metadata-based rule, not independent language verification; some excluded unlabelled posts may be English, and tagged posts may be mislabelled.
+
+URLs, including bare domains and query strings, and account mentions are removed. Text is tokenised into lowercase words; English stop words, tokens containing non-ASCII letters or nonletters, and one-letter tokens are removed. Twenty-four English-labelled posts have no retained tokens, leaving **727 usable posts: 371 RTO and 356 WFH**. Full word forms are retained for readable descriptive charts. The per-post audit is saved in `outputs/text/inclusion_audit.csv`.
+
+```{r text-inclusion-table, echo=FALSE}
+knitr::kable(read.csv("outputs/text/sample_counts.csv"),
+             caption = "Text-analysis inclusion decisions by search group")
+```
+
+The earlier 20-post review identified political-office references, a Swedish post and link-only material. It was a diagnostic sample, not a complete relevance screen. No topic-based exclusions or text-based deduplication are applied here: distinct URIs can repeat the same message. Results therefore describe **English-labelled search results**, not a verified corpus of workplace-only discussion. The network section uses its own separately collected thread sample; these text-analysis filters do not alter it.

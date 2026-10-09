@@ -6,10 +6,20 @@ author:
   - "Alexander Manalo"
   - "Manraj Singh"
 output: pdf_document
+header-includes: |
+  \usepackage{float}
+  \usepackage{booktabs}
+  \usepackage{fvextra}
+  \AtBeginDocument{\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},breaklines=true,breakanywhere=true,breaknonspaceingroup=true}}
 ---
 
 ```{r setup, include=FALSE}
-source("scripts/06_thread_analysis.R")
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
+knitr::opts_knit$set(root.dir = normalizePath("."))
+# Render the saved network results; rerun 06_thread_analysis.R to regenerate them.
+thread_summary <- read.csv("outputs/network/network_summary.csv")
+reply_ranking <- read.csv("outputs/network/account_centrality.csv")
+between_ranking <- reply_ranking[order(-reply_ranking$betweenness, reply_ranking$account), ]
 ```
 
 # 1 Introduction
@@ -20,7 +30,8 @@ Our research questions were:
 
 1. What common words and themes appear in the posts from the two search groups?
 2. How do sentiment categories compare between the return-to-office and remote-work search groups?
-3. How do accounts interact through replies around our three selected posts?
+3. Do English-labelled search results contain distinct vocabulary clusters, and how do these relate to the search groups?
+4. How do accounts interact through replies around our three selected posts?
 
 # 2 Analysis
 
@@ -28,9 +39,13 @@ Our research questions were:
 
 We collected Bluesky posts using the search phrases “return to office” and “remote work”. For each search, we requested 500 posts, with the results ordered by latest. We saved the raw results separately and combined the datasets for analysis. We labelled posts as RTO or WFH based on the search they came from. Basic cleaning removed posts with missing text, posts with 10 characters or fewer, and repeated posts using their URIs. The two labels describe the search groups rather than whether people preferred working from home or returning to the office.
 
+```{r preparation-section, child="report_sections/text_preparation.Rmd"}
+```
+
 ## 2.2 Text analysis
 
-[Add the final text figures and explain what each shows.]
+```{r text-section, child="report_sections/text_results.Rmd"}
+```
 
 ## 2.3 Hypothesis testing
 
@@ -38,7 +53,8 @@ We collected Bluesky posts using the search phrases “return to office” and �
 
 ## 2.4 Clustering
 
-[Add the text representation, distance, method, cluster-count choice, figure and interpretation.]
+```{r clustering-section, child="report_sections/clustering_results.Rmd"}
+```
 
 
 ## 2.5 Network analysis
@@ -85,6 +101,10 @@ structure_table <- data.frame(
 
 knitr::kable(
   structure_table,
+  format = if (knitr::is_latex_output()) "latex" else "pipe",
+  longtable = FALSE,
+  booktabs = TRUE,
+  position = "H",
   caption = "Structure of the observed reply network"
 )
 ```
@@ -152,3 +172,13 @@ The text and context did not give us enough information to label 6 posts more cl
 [Add the sources, packages and methods used.]
 
 **Project repository:** https://github.com/AlexanderManalo19385596/comp3020-bluesky-rto-wfh
+
+# Appendix: text and clustering code
+
+```{r text-clustering-code, echo=FALSE, results="asis"}
+for (f in c("scripts/05_text_analysis.R", "scripts/07_clustering.R")) {
+  cat("\n## ", basename(f), "\n\n```r\n", sep = "")
+  cat(paste(readLines(f), collapse = "\n"))
+  cat("\n```\n")
+}
+```

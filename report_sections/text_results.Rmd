@@ -1,0 +1,19 @@
+**Research question:** What vocabulary characterises the English-labelled RTO and WFH search results?
+
+We use two complementary measures. Raw frequency counts every occurrence of a word; the post-level percentage counts a word only once per post and divides by the number of usable posts in that search group. Thus a word repeated several times in one post increases raw frequency but not post-level prevalence. These are descriptive comparisons, not hypothesis tests.
+
+```{r final-word-frequency, echo=FALSE, out.width="100%", fig.cap="Top 15 words per search group by raw occurrences. Panels share a common count scale."}
+knitr::include_graphics("outputs/text/word_frequency.png")
+```
+
+The frequent-word figure is dominated by terms connected to the queries, such as "return", "office" and "remote". This is partly a consequence of how the posts were retrieved and should not be presented as an independently discovered topic.
+
+For the second figure only, we exclude `return`, `office`, `remote`, `work`, `home`, `rto`, `wfh` and `remotework`. Both panels use the same percentage scale; their denominators are 371 RTO posts and 356 WFH posts. Each panel shows its own top 15 terms, so an absent word is not necessarily absent from that group.
+
+```{r final-post-word-rates, echo=FALSE, out.width="100%", fig.cap="Percentage of usable posts mentioning each word, excluding topic-defining words. Word forms such as job/jobs and mandate/mandates are counted separately."}
+knitr::include_graphics("outputs/text/post_word_percentages.png")
+```
+
+In RTO results, "policy" appears in 27 posts (7.3%), "mandates" in 25 (6.7%) and "employees" in 20 (5.4%). WFH results include "job" in 33 posts (9.3%), "jobs" in 29 (8.1%) and "time" in 27 (7.6%). These patterns suggest policy/employment vocabulary in RTO and job-related vocabulary in WFH. They do not establish support for either arrangement or the sentiment of the posts.
+
+"Trump" occurs in 31 RTO posts (8.4%). Some political terms refer to genuine government workplace policies, while others come from unrelated political-office stories. Removing names alone would not resolve that distinction. Similarly, recruitment and repeated fundraising messages can contribute to WFH word counts. This motivates the clustering analysis: are the apparent themes broad patterns, or are some driven by repeated message families?

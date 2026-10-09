@@ -1,0 +1,9 @@
+"group","decision","posts"
+"RTO","Included",371
+"RTO","Missing language tag",167
+"RTO","No retained English word tokens",17
+"RTO","Non-English or mixed language tags",22
+"WFH","Included",356
+"WFH","Missing language tag",178
+"WFH","No retained English word tokens",7
+"WFH","Non-English or mixed language tags",19
