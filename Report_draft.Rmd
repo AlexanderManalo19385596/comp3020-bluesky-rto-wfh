@@ -1,6 +1,6 @@
 ---
 title: "Remote work and return to office discussions on Bluesky"
-subtitle: "Group 25 - Working report"
+subtitle: "Group 25 - Group Report"
 author:
   - "Joshua William Kilpatrick"
   - "Alexander Manalo"
@@ -173,7 +173,7 @@ Most replies were around the selected posts. With only two reply levels, there a
 
 The text and context did not give us enough information to label 6 posts more clearly. We did not check media, so that information is missing from our content review. We still kept all 66 posts, including the unclear and off-topic ones. An account's colour or position on the graph does not tell us its workplace preference. These network review counts come from a separate sample from the group's keyword-based content analysis.
 
-# 3 Discussion
+# 3 Overall Findings
 
 Overall, posts from the return-to-office search were more negative than posts from the remote-work search. 52.0% of the RTO posts were negative and 36.6% were positive, while for the WFH posts 26.8% were negative and 55.4% were positive. The chi-squared test showed this difference was unlikely to be due to chance. However, our text analysis and clustering suggest this doesn't mean people were just angrier about RTO. The two searches pulled in different kinds of posts, and a lot of the words that decided the sentiment scores came from repeated news stories and appeals, not from people giving their opinion on a work arrangement.
 
@@ -185,7 +185,7 @@ Our collection revealed three distinct conversational groups swirling around the
 
 In this project we looked at Bluesky posts about return-to-office and remote work. Our answers to the four research questions are below.
 
-1. **Sentiment.** RTO posts were more often negative than WFH posts (52.0% compared with 26.8%). The chi-squared test found a significant association between search group and sentiment (X-squared = 36.39, df = 2, p < .001), with a small to moderate effect (Cramer's V = 0.26). The difference was about twice as big before we removed the search words from the dictionary, so this choice mattered.
+1. **Sentiment.** RTO posts were more often negative than WFH posts (52.0% compared with 26.8%). The chi-squared test found a significant association between search group and sentiment (X-squared = 36.39, df = 2, p < .001), with a small to moderate effect (Cramer's V = 0.26). The difference was clearly bigger (Cramer's V = 0.46) before we removed the search words from the dictionary, so this choice mattered.
 2. **Vocabulary.** The RTO posts used more words like "policy", "mandates" and "employees", while the WFH posts used "job" and "jobs" more.
 3. **Clusters.** We didn't find strong evidence of separate themes. Most posts (642 of 700, or 91.7%) ended up in one mixed cluster. The four small clusters were mostly repeated messages, and each came from just one search group.
 4. **Network.** The network had 62 accounts and 60 connections, and a density of 0.016, so it was very sparse. Most replies went to the three accounts that wrote the selected posts, and the three conversations stayed separate from each other.
@@ -222,9 +222,9 @@ Wickham, H. (2016). *ggplot2: Elegant graphics for data analysis*. Springer-Verl
 # Appendix: text and clustering code
 
 ```{r text-clustering-code, echo=FALSE, results="asis"}
-for (f in c("scripts/05_text_analysis.R", "scripts/07_clustering.R")) {
+for (f in c("scripts/01_data_collection.R", "scripts/02_data_cleaning.R", "scripts/08_sentiment_analysis.R", "scripts/05_text_analysis.R", "scripts/07_clustering.R")) {
   cat("\n## ", basename(f), "\n\n```r\n", sep = "")
-  cat(paste(readLines(f), collapse = "\n"))
+  cat(paste(readLines(f, warn = FALSE), collapse = "\n"))
   cat("\n```\n")
 }
 ```
