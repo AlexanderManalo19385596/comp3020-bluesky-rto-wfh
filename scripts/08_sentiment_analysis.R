@@ -13,8 +13,8 @@
 #
 # Main analysis: the query words (return, office, remote, work, home, rto, wfh,
 # remotework) and "trump" are removed from the sentiment dictionary before scoring.
-# The Bing dictionary counts "work" and "trump" as positive. Every WFH post contains
-# "remote work" by construction, so leaving "work" in would make WFH posts look
+# The Bing dictionary counts "work" and "trump" as positive. Many WFH posts contain
+# "remote work", so leaving "work" in could make WFH posts look
 # positive before anyone says anything.
 #
 # Robustness checks: (1) without removing those words, (2) all 1,137 cleaned posts

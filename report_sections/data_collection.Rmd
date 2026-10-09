@@ -23,6 +23,6 @@ Cleaning (`scripts/02_data_cleaning.R`) combined the two searches and removed re
 
 - **Keyword sampling.** A post is collected only if it contains the exact phrase. Posts using "WFH", "hybrid work" or "RTO" alone are missed, so the groups are defined by wording and not by every post about the topic.
 - **Platform and language.** Bluesky users are not a random sample of workers. Our posts are mostly English and strongly shaped by United States news, particularly government workplace policy, so the results do not describe Australian workers or the public in general.
-- **Short, uneven time windows.** We collected the latest 500 results for each phrase, so the groups cover different periods (see below). This affects direct comparisons between them.
+- **Short, uneven time windows.** We requested the latest 500 results for each phrase, so the groups cover different periods (see below). This affects direct comparisons between them.
 - **Not every post is an opinion.** Some posts are job adverts, news links or unrelated uses of the phrase. The later sections show that these shape the apparent differences between groups.
 - **Frozen data.** Searching again would return different posts, so the keyword data was collected once and every analysis uses the saved files in `data/`. The three conversation threads used for the network in Section 2.5 were collected separately, and are also saved.

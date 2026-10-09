@@ -175,6 +175,8 @@ The text and context did not give us enough information to label 6 posts more cl
 
 # 3 Overall Findings
 
+These sentiment percentages refer to the 548 scored posts (279 RTO and 269 WFH).
+
 Overall, posts from the return-to-office search were more negative than posts from the remote-work search. 52.0% of the RTO posts were negative and 36.6% were positive, while for the WFH posts 26.8% were negative and 55.4% were positive. The chi-squared test showed this difference was unlikely to be due to chance. However, our text analysis and clustering suggest this doesn't mean people were just angrier about RTO. The two searches pulled in different kinds of posts, and a lot of the words that decided the sentiment scores came from repeated news stories and appeals, not from people giving their opinion on a work arrangement.
 
 The text results showed policy and mandate words in the RTO search group, while the remote work group showed job and jobs. The clustering did not reveal clear workplace themes, as most posts were in one mixed cluster and the smaller groups held unrelated uses of search terms and repeated messages. These results suggest that some patterns came from how posts were collected and repeated. They do not establish whether people preferred remote work or RTO.
@@ -185,7 +187,7 @@ Our collection revealed three distinct conversational groups swirling around the
 
 In this project we looked at Bluesky posts about return-to-office and remote work. Our answers to the four research questions are below.
 
-1. **Sentiment.** RTO posts were more often negative than WFH posts (52.0% compared with 26.8%). The chi-squared test found a significant association between search group and sentiment (X-squared = 36.39, df = 2, p < .001), with a small to moderate effect (Cramer's V = 0.26). The difference was clearly bigger (Cramer's V = 0.46) before we removed the search words from the dictionary, so this choice mattered.
+1. **Sentiment.** Among scored posts, RTO posts were more often negative than WFH posts (52.0% compared with 26.8%). The chi-squared test found a significant association between search group and sentiment (X-squared = 36.39, df = 2, p < .001), with a small to moderate effect (Cramer's V = 0.26). The difference was clearly bigger (Cramer's V = 0.46) before we removed the search words from the dictionary, so this choice mattered.
 2. **Vocabulary.** The RTO posts used more words like "policy", "mandates" and "employees", while the WFH posts used "job" and "jobs" more.
 3. **Clusters.** We didn't find strong evidence of separate themes. Most posts (642 of 700, or 91.7%) ended up in one mixed cluster. The four small clusters were mostly repeated messages, and each came from just one search group.
 4. **Network.** The network had 62 accounts and 60 connections, and a density of 0.016, so it was very sparse. Most replies went to the three accounts that wrote the selected posts, and the three conversations stayed separate from each other.
