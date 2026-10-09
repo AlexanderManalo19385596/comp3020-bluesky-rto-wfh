@@ -54,3 +54,9 @@ rmarkdown::render("text_clustering_section.Rmd", output_format = "html_document"
 ```
 
 For PDF output, use `output_format = "pdf_document"`. PDF rendering requires Pandoc and LaTeX.
+
+## Combined report
+
+Open `GroupProject.Rproj` in RStudio, then open `Report_draft.Rmd` and click **Knit**.
+
+The report reads the saved analysis outputs. PDF rendering requires `knitr`, `rmarkdown`, Pandoc and a LaTeX installation.
