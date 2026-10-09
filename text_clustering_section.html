@@ -795,7 +795,6 @@ print(text_counts)</code></pre>
 <pre class="r"><code># RQ: Do English-labelled search results contain distinct vocabulary clusters?
 # Run 05_text_analysis.R first. Module 6: TF-IDF, k-means and elbow analysis.
 library(dplyr)
-library(tidyr)
 library(tidytext)
 library(SnowballC)
 library(ggplot2)
@@ -876,18 +875,17 @@ for (name in c(&quot;elbow&quot;, &quot;cluster&quot;, &quot;term&quot;)) {
   print(figure)
   ggsave(paste0(&quot;outputs/clustering/&quot;, name, &quot;.png&quot;), figure, width = 11, height = 7, dpi = 300, bg = &quot;white&quot;)
 }
-results &lt;- list(assignments = assignments, top_terms = top_terms, examples = examples,
-                cluster_summary = cluster_summary, elbow = elbow, repetition = repetition,
-                candidate_summary = candidate_summary)
-for (name in names(results)) write.csv(results[[name]],
-  paste0(&quot;outputs/clustering/&quot;, name, &quot;.csv&quot;), row.names = FALSE)
 excluded &lt;- a$posts |&gt; filter(!uri %in% assignments$uri) |&gt;
   select(uri, group, text) |&gt; mutate(reason = &quot;No terms after topic-word and document-frequency filters&quot;)
-write.csv(excluded, &quot;outputs/clustering/excluded_posts.csv&quot;, row.names = FALSE)
 metrics &lt;- data.frame(posts = nrow(X), terms = ncol(X), k = chosen_k,
   excluded_after_text = nrow(excluded), explained_between_percent = 100 * fit$betweenss / fit$totss,
   pc1_percent = variance[1], pc2_percent = variance[2])
-write.csv(metrics, &quot;outputs/clustering/metrics.csv&quot;, row.names = FALSE)
+# Save all result tables using the same output convention.
+results &lt;- list(assignments = assignments, top_terms = top_terms, examples = examples,
+  cluster_summary = cluster_summary, elbow = elbow, repetition = repetition,
+  candidate_summary = candidate_summary, excluded_posts = excluded, metrics = metrics)
+for (name in names(results)) write.csv(results[[name]],
+  paste0(&quot;outputs/clustering/&quot;, name, &quot;.csv&quot;), row.names = FALSE)
 saveRDS(list(fit = fit, cluster = cluster, uris = rownames(X), terms = colnames(X)),
         &quot;outputs/clustering/model.rds&quot;)
 writeLines(capture.output(sessionInfo()), &quot;outputs/clustering/session_info.txt&quot;)

@@ -1,7 +1,6 @@
 # RQ: Do English-labelled search results contain distinct vocabulary clusters?
 # Run 05_text_analysis.R first. Module 6: TF-IDF, k-means and elbow analysis.
 library(dplyr)
-library(tidyr)
 library(tidytext)
 library(SnowballC)
 library(ggplot2)
@@ -82,18 +81,17 @@ for (name in c("elbow", "cluster", "term")) {
   print(figure)
   ggsave(paste0("outputs/clustering/", name, ".png"), figure, width = 11, height = 7, dpi = 300, bg = "white")
 }
-results <- list(assignments = assignments, top_terms = top_terms, examples = examples,
-                cluster_summary = cluster_summary, elbow = elbow, repetition = repetition,
-                candidate_summary = candidate_summary)
-for (name in names(results)) write.csv(results[[name]],
-  paste0("outputs/clustering/", name, ".csv"), row.names = FALSE)
 excluded <- a$posts |> filter(!uri %in% assignments$uri) |>
   select(uri, group, text) |> mutate(reason = "No terms after topic-word and document-frequency filters")
-write.csv(excluded, "outputs/clustering/excluded_posts.csv", row.names = FALSE)
 metrics <- data.frame(posts = nrow(X), terms = ncol(X), k = chosen_k,
   excluded_after_text = nrow(excluded), explained_between_percent = 100 * fit$betweenss / fit$totss,
   pc1_percent = variance[1], pc2_percent = variance[2])
-write.csv(metrics, "outputs/clustering/metrics.csv", row.names = FALSE)
+# Save all result tables using the same output convention.
+results <- list(assignments = assignments, top_terms = top_terms, examples = examples,
+  cluster_summary = cluster_summary, elbow = elbow, repetition = repetition,
+  candidate_summary = candidate_summary, excluded_posts = excluded, metrics = metrics)
+for (name in names(results)) write.csv(results[[name]],
+  paste0("outputs/clustering/", name, ".csv"), row.names = FALSE)
 saveRDS(list(fit = fit, cluster = cluster, uris = rownames(X), terms = colnames(X)),
         "outputs/clustering/model.rds")
 writeLines(capture.output(sessionInfo()), "outputs/clustering/session_info.txt")
