@@ -1,0 +1,51 @@
+**Research question:** Do the English-labelled search results form distinct vocabulary clusters, and how are the two search groups distributed across them?
+
+### Representation and method
+
+Starting with the same 727 usable posts, we remove the eight topic-defining terms used in the second word chart and apply English stemming with `SnowballC` (for example, employee/employees share a stem). We retain stems appearing in at least three posts to reduce one-off names and idiosyncratic vocabulary. This threshold is a modelling choice that can suppress rare themes. Twenty-seven posts become empty after these additional filters; all are recorded in `outputs/clustering/excluded_posts.csv`. The clustering matrix contains **700 posts and 811 stems**.
+
+Term frequency is a stem's count divided by the total count of retained stems in that post. Inverse document frequency is `log(N / df)`, where `N = 700` and `df` is the number of retained posts containing that stem. Their product is TF-IDF. We normalise each document vector to unit Euclidean length to reduce the effect of post length.
+
+We run ordinary k-means using squared Euclidean distance on these normalised vectors, following the course's TF-IDF, normalisation and k-means concepts. For two unit document vectors, squared Euclidean distance equals twice cosine dissimilarity. However, k-means centroids are not constrained to unit length, so this is **not spherical k-means or direct optimisation of cosine distance**. No two-dimensional projection is used to fit the clusters, and RTO/WFH labels are excluded from the input features.
+
+### Number of clusters
+
+For each `k` from 1 to 10, we use 30 random starts, at most 100 iterations and the reproducible seed `3020 + k`. We examine within-cluster sums of squares and representative text. The elbow curve has **no decisive bend**, so there is no strong evidence for one natural cluster count.
+
+```{r cluster-elbow, echo=FALSE, out.width="90%", fig.cap="Within-cluster sums of squares for k = 1 to 10. The dashed line marks the exploratory five-cluster solution."}
+knitr::include_graphics("outputs/clustering/elbow.png")
+```
+
+We select **k = 5 as an interpretable exploratory summary**. In the three-cluster run, 11 job-referral posts and ten auto-manufacturing news posts were combined. Five clusters separate these repeated families and also isolate another political-news group. The improvement from k = 4 to 5 is about 8.76 sum-of-squares units, compared with 2.63 from k = 5 to 6, but later reductions still occur. This is a pragmatic interpretation choice, not a claim of five well-separated workplace themes. The five-cluster solution accounts for only **5.32%** of total sum of squares between clusters.
+
+### Cluster contents and search-group composition
+
+We inspect the highest mean TF-IDF stems and actual posts, including the small clusters' message families. Cluster numbers are ordered by decreasing size. Labels below are analyst descriptions; the algorithm supplies numbers, not meanings.
+
+| Cluster | Posts | RTO | WFH | Interpretation |
+|---|---:|---:|---:|---|
+| 1 | 642 | 327 | 315 | Broad mixed remainder: workplace, policy, employment and other content |
+| 2 | 21 | 21 | 0 | Repeated political-news wording, including stock-trading and investigation stories |
+| 3 | 16 | 0 | 16 | Repeated fundraising/assistance appeals mentioning remote work |
+| 4 | 11 | 0 | 11 | Repeated remote-job referral advertisements |
+| 5 | 10 | 10 | 0 | Repeated auto-manufacturing news mentioning a president's return to office |
+
+Cluster 1 contains **91.7%** of the clustered posts. Its terms include `peopl`, `mandat`, `time`, `day`, `polici`, `job`, `employe` and `worker`. Nearby example posts discuss commuting costs, unequal access to home working and return-to-office requirements. This large cluster is heterogeneous and should not be treated as a single coherent theme.
+
+Cluster 2 contains political-news language such as `trade`, `congress`, `stock`, `fbi` and `collin`. These describe the content of the posts, not independently verified news claims. Cluster 3 contains `pls`, `food`, `med`, `ppl` and `chronic`, reflecting repeated requests for assistance. Cluster 4 contains `cash`, `luck`, `mercor`, `extra` and `opportun`, reflecting job-referral promotions. Cluster 5 contains `reviv`, `promis`, `wave`, `struggl` and `upend`, reflecting repeated wording from one news story. The political-office families demonstrate query ambiguity rather than workplace preferences.
+
+```{r cluster-terms, echo=FALSE, out.width="100%", fig.cap="Ten highest mean TF-IDF stems per cluster. Stemming produces shortened forms; weights are averaged within each cluster."}
+knitr::include_graphics("outputs/clustering/term.png")
+```
+
+The 11 referral posts have only three distinct cleaned token sequences; the 16 assistance posts have 13. These exact-sequence counts understate near-duplication because small wording changes create different sequences. Distinct URIs were retained, so repetition can drive a cluster. Cluster sizes are post counts, not counts of independent people or opinions.
+
+### Visualisation and interpretation limits
+
+```{r cluster-projection, echo=FALSE, out.width="100%", fig.cap="PCA display of clusters fitted in the full normalised TF-IDF space. Overlapping points can hide multiple posts."}
+knitr::include_graphics("outputs/clustering/cluster.png")
+```
+
+The first two principal components explain only **1.78% and 1.52%** of variance, respectively (3.30% together). The plot is therefore a very limited projection; visible proximity or separation cannot establish the full clustering quality. Empty-post exclusions, stemming, vocabulary threshold, query-term removal, k and random initialisation all affect the solution. We have not established stability across datasets or a unique optimal solution.
+
+Together, the text and clustering results show that query vocabulary and repeated content shape the apparent differences between groups. The analysis identifies some recurring message families but provides **weak evidence for broad, distinct workplace-discussion clusters**. A full relevance review, more balanced sampling and sensitivity to repeated text would be needed before drawing stronger conclusions about working arrangements.

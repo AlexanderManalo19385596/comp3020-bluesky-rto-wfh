@@ -1,0 +1,45 @@
+---
+title: "English-labelled Bluesky posts: text analysis and clustering"
+author: "Manraj Singh"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath("."))
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+# Data and scope
+
+```{r preparation, child="report_sections/text_preparation.Rmd"}
+```
+
+# Text analysis
+
+```{r text, child="report_sections/text_results.Rmd"}
+```
+
+# Clustering
+
+```{r clustering, child="report_sections/clustering_results.Rmd"}
+```
+
+# Reproduction and course methods
+
+Open `GroupProject.Rproj`, install `dplyr`, `tidyr`, `tidytext`, `stringr`, `ggplot2`, `SnowballC`, `knitr` and `rmarkdown`, then run `scripts/05_text_analysis.R` followed by `scripts/07_clustering.R`. Knit this document afterwards. No Bluesky login is needed for the saved data. Session information is in each output folder.
+
+The methods follow COMP3020 Module 4 (text representation), Module 5 (TF-IDF and PCA) and Module 6 (k-means, normalisation and elbow comparison). The Module 6 lab also demonstrates an MDS route for cosine dissimilarities; here we instead apply Euclidean k-means directly to unit-length TF-IDF vectors, with that distinction stated explicitly. A standalone PDF requires a LaTeX installation.
+
+# Appendix: analysis code
+
+```{r analysis-code, echo=FALSE, results='asis'}
+for (f in c("scripts/05_text_analysis.R", "scripts/07_clustering.R")) {
+  cat("\n## ", basename(f), "\n\n```r\n", sep = "")
+  cat(paste(readLines(f), collapse = "\n"))
+  cat("\n```\n")
+}
+```

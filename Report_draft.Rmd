@@ -9,7 +9,11 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-source("scripts/06_thread_analysis.R")
+knitr::opts_knit$set(root.dir = normalizePath("."))
+# Render the saved network results; rerun 06_thread_analysis.R to regenerate them.
+thread_summary <- read.csv("outputs/network/network_summary.csv")
+reply_ranking <- read.csv("outputs/network/account_centrality.csv")
+between_ranking <- reply_ranking[order(-reply_ranking$betweenness, reply_ranking$account), ]
 ```
 
 # 1 Introduction
@@ -20,17 +24,20 @@ Our research questions were:
 
 1. What common words and themes appear in the posts from the two search groups?
 2. How do sentiment categories compare between the return-to-office and remote-work search groups?
-3. How do accounts interact through replies around our three selected posts?
+3. Do English-labelled search results contain distinct vocabulary clusters, and how do these relate to the search groups?
+4. How do accounts interact through replies around our three selected posts?
 
 # 2 Analysis
 
 ## 2.1 Data collection and preparation
 
-[Add collection details, cleaning rules, relevance/language handling and final sample counts.]
+```{r preparation-section, child="report_sections/text_preparation.Rmd"}
+```
 
 ## 2.2 Text analysis
 
-[Add the final text figures and explain what each shows.]
+```{r text-section, child="report_sections/text_results.Rmd"}
+```
 
 ## 2.3 Hypothesis testing
 
@@ -38,7 +45,8 @@ Our research questions were:
 
 ## 2.4 Clustering
 
-[Add the text representation, distance, method, cluster-count choice, figure and interpretation.]
+```{r clustering-section, child="report_sections/clustering_results.Rmd"}
+```
 
 
 ## 2.5 Network analysis
@@ -152,3 +160,13 @@ The text and context did not give us enough information to label 6 posts more cl
 [Add the sources, packages and methods used.]
 
 **Project repository:** https://github.com/AlexanderManalo19385596/comp3020-bluesky-rto-wfh
+
+# Appendix: text and clustering code
+
+```{r text-clustering-code, echo=FALSE, results="asis"}
+for (f in c("scripts/05_text_analysis.R", "scripts/07_clustering.R")) {
+  cat("\n## ", basename(f), "\n\n```r\n", sep = "")
+  cat(paste(readLines(f), collapse = "\n"))
+  cat("\n```\n")
+}
+```
